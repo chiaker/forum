@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+poetry.lock
+pyproject.toml
+
 # C extensions
 *.so
 
