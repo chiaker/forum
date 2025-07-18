@@ -43,13 +43,13 @@ def get_posts_by_topic(topic_id: int):
     return posts
 
 
-def create_post(post_create: PostCreate):
+def create_post(topic_id: int, post_create: PostCreate):
     db = SessionLocal()
-    topic = db.query(Topic).filter(Topic.id == post_create.topic_id).first()
+    topic = db.query(Topic).filter(Topic.id == topic_id).first()
     if not topic:
         db.close()
         return None
-    post = Post(topic_id=post_create.topic_id, content=post_create.content)
+    post = Post(topic_id=topic_id, content=post_create.content)
     db.add(post)
     db.commit()
     db.refresh(post)

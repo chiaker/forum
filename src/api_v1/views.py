@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Query
 from .schemas import Topic, TopicCreate, Post, PostCreate
 from . import crud
+from src.api_v1.models import check_admin_token
 
 router = APIRouter()
 
+print(crud.create_post)
 
 @router.get("/topics", response_model=list[Topic])
 def get_topics():
@@ -24,11 +26,8 @@ def create_topic(topic: TopicCreate):
 
 
 @router.delete("/topics/{topic_id}", response_model=Topic)
-def delete_topic(topic_id: int, admin_token: str = Query(default=None)):
-    if not admin_token:
-        raise HTTPException(
-            status_code=401, detail="Необходим токен администратора")
-    if admin_token != "secret":
+def delete_topic(topic_id: int, admin_token: str = Query(...)):
+    if not check_admin_token(admin_token):
         raise HTTPException(status_code=403, detail="Нет прав администратора")
     topic = crud.delete_topic(topic_id)
     if not topic:
@@ -44,9 +43,7 @@ def get_posts(topic_id: int):
 
 @router.post("/topics/{topic_id}/posts", response_model=Post)
 def create_post(topic_id: int, post: PostCreate):
-    if topic_id != post.topic_id:
-        raise HTTPException(status_code=400, detail="topic_id mismatch")
-    created_post = crud.create_post(post)
+    created_post = crud.create_post(topic_id, post)
     if not created_post:
         raise HTTPException(status_code=404, detail="Топик не найден")
     return created_post
@@ -62,7 +59,7 @@ def get_post_by_id(post_id: int):
 
 @router.delete("/topics/{topic_id}/posts/{post_id}", response_model=Post)
 def delete_post_by_topic(topic_id: int, post_id: int, admin_token: str = Query(...)):
-    if admin_token != "secret":
+    if not check_admin_token(admin_token):
         raise HTTPException(status_code=403, detail="Нет прав администратора")
     post = crud.delete_post_by_topic(topic_id, post_id)
     if not post:

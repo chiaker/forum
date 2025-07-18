@@ -21,7 +21,6 @@ class Topic(BaseModel):
 
 
 class PostCreate(BaseModel):
-    topic_id: int
     content: str
 
 

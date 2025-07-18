@@ -3,6 +3,7 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+import hashlib
 
 DATABASE_URL = "sqlite:///./forum.db"
 
@@ -30,3 +31,10 @@ class Post(Base):
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+
+
+ADMIN_TOKEN_HASH = "7d80b93a8bd6dc67fea7f89555da1d0b60356863290ca5668160d6d97fe90f75"
+
+
+def check_admin_token(token: str) -> bool:
+    return hashlib.sha256(token.encode()).hexdigest() == ADMIN_TOKEN_HASH
