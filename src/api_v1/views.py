@@ -5,7 +5,6 @@ from src.api_v1.models import check_admin_token
 
 router = APIRouter()
 
-print(crud.create_post)
 
 @router.get("/topics", response_model=list[Topic])
 def get_topics():
