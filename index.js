@@ -34,14 +34,20 @@ const app = () => {
     root.innerHTML = "";
 
     state.topics.forEach((topic) => {
-      const item = document.createElement('button');
-      item.className = "btn btn-outline-primary";
-      item.textContent = topic.title;
-      item.id = topic.id;
-      item.addEventListener('click', () => {
-        loadPosts(topic.id);
-      });
-      root.append(item);
+			root.innerHTML += `
+			<div class="post-item" id="${topic.id}">
+        <h2 class="post-item__title">${topic.title}</h2>
+        <span class="post-item__text-contant">${topic.content}</span>
+      </div>
+			
+			`
+//      const item = document.createElement('button');
+//      item.className = "post-item__title";
+//      item.textContent = topic.title;
+//      item.id = topic.id;
+//      item.addEventListener('click', () => {
+//        loadPosts(topic.id);
+//      });
     });
   };
 
@@ -72,7 +78,7 @@ const app = () => {
 
   loadTopics();
 
-	
+
 };
 
 app();
