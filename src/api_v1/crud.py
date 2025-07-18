@@ -20,7 +20,7 @@ def get_all_topics():
 
 def create_topic(topic_create: TopicCreate):
     db = SessionLocal()
-    topic = Topic(title=topic_create.title)
+    topic = Topic(title=topic_create.title, content=topic_create.content)
     db.add(topic)
     db.commit()
     db.refresh(topic)

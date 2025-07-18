@@ -12,11 +12,13 @@ class Comment(BaseModel):
 
 class TopicCreate(BaseModel):
     title: str
+    content: str
 
 
 class Topic(BaseModel):
     id: int
     title: str
+    content: str
     created_at: datetime
 
 
