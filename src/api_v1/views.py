@@ -24,7 +24,10 @@ def create_topic(topic: TopicCreate):
 
 
 @router.delete("/topics/{topic_id}", response_model=Topic)
-def delete_topic(topic_id: int, admin_token: str = Query(...)):
+def delete_topic(topic_id: int, admin_token: str = Query(default=None)):
+    if not admin_token:
+        raise HTTPException(
+            status_code=401, detail="Необходим токен администратора")
     if admin_token != "secret":
         raise HTTPException(status_code=403, detail="Нет прав администратора")
     topic = crud.delete_topic(topic_id)
@@ -55,8 +58,6 @@ def get_post_by_id(post_id: int):
     if not post:
         raise HTTPException(status_code=404, detail="Пост не найден")
     return post
-
-
 
 
 @router.delete("/topics/{topic_id}/posts/{post_id}", response_model=Post)
