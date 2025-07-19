@@ -21,9 +21,7 @@ jobs:
 
       - name: Add server to known_hosts
         run: |
-          
-          touch ~/.ssh/known_hosts
-
+           ssh-keyscan -p 10022 62.183.54.203 >> ~/.ssh/known_hosts
       - name: Deploy via SSH
         run: |
           ssh -i ~/.ssh/id_ed25518 root_server@62.183.54.203 -p 10022 'cd /home/root_server/forum/forum && git pull origin main'
