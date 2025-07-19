@@ -13,7 +13,9 @@ h1{
 }
 .main {
   position: relative;
-  margin-bottom: 150px;
+}
+.posts{
+  margin-bottom: 150px;  
 }
 .posts-list {
   display: flex;
@@ -25,6 +27,8 @@ h1{
   border-bottom-right-radius: 25px;
   box-shadow: 4px 4px 4px 0 rgba(0,0,0,0.13), 0 1.5px 0 0 #fff;
   margin-bottom: 45px;
+  height: 515px;
+  overflow-y: auto;
 }
 .post-item {
   display: flex;
@@ -75,10 +79,7 @@ h1{
   height: 10px;
   border-radius: 5px;
 }
-.footer {
-  width: 100%;
-  min-height: 170px;
-}
+
 .modal {
 	background-color: rgba(0, 0, 0, 0.5);
 	backdrop-filter: blur(3px);

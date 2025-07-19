@@ -20,7 +20,7 @@ const app = () => {
 	closeBtn.addEventListener('click', closeModal);
 
   const loadTopics = () => {
-   fetch("/api/v1/topics")
+  fetch("/api/v1/topics")
     .then(response => response.json())
     .then(data => {
       state.topics = data;

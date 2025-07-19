@@ -15,25 +15,25 @@
       <h1>Welcome To Forum</h1>
     </header>
     <main class="main">
-      <div class="posts-list" id="topic-list">
-      </div>
-      <button class="create-new-post__button" id="openBtn" type="button">Create new post</button>
-    </main>
-    <footer class="footer">
+      <section class="posts">
+        <div class="posts-list" id="topic-list">
+        </div>
+        <button class="create-new-post__button" id="openBtn" type="button">Create new post</button>
+      </section>
       <div class="line-bottom"></div>
-    </footer>
+    </main>
   </div>
 
-	<form class="modal" id="addTopicForm" action="/api/v1/topics">
-		<div class="modal_content" id="modal_content">
-			<p class="modal_title">Post title</p>
-			<input type="text" name="topicTitle" class="modal_input">
-			<input type="submit" value="Create" class="modal_submit">
-			<button type="button" class="modal_close" id="closeBtn">Close</button>
-		</div>
-	</form>
+  <form class="modal" id="addTopicForm" action="/api/v1/topics">
+    <div class="modal_content" id="modal_content">
+      <p class="modal_title">Post title</p>
+      <input type="text" name="topicTitle" class="modal_input">
+      <input type="submit" value="Create" class="modal_submit">
+      <button type="button" class="modal_close" id="closeBtn">Close</button>
+    </div>
+  </form>
 
-	<script src="index.js"></script>
+  <script src="index.js"></script>
 </body>
 
 </html>
