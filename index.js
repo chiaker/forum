@@ -4,17 +4,17 @@ const app = () => {
     posts: []
   };
 
-
   const loadTopics = () => {
-    fetch("/api/v1/topics")
-      .then(response => response.json())
-      .then(data => {
-        state.topics = data;
-        renderTopic();
-      })
-      .catch(error => {
-        console.error("Ошибка загрузки тем:", error);
-      });
+	  fetch("/api/v1/topics")
+	    .then(response => response.json())
+	    .then(data => {
+	      state.topics = data;
+	      renderTopic();
+	    })
+	    .catch(error => {
+	      console.error("Ошибка загрузки тем:", error);
+	    });
+ renderTopic();
   };
 
   const loadPosts = (topicId) => {
@@ -78,7 +78,25 @@ const app = () => {
 
   loadTopics();
 
+	const form = document.getElementById('addTopicForm');
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
 
+		const formData = new FormData(form);
+
+		const jsonData = {
+			title: formData.title,
+			content: 'content'
+		}
+
+		fetch(form.action, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: json.stringify(jsonData)
+		})
+	})
 };
 
 app();
