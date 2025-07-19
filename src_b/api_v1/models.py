@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -44,3 +44,27 @@ ADMIN_TOKEN_HASH = "7d80b93a8bd6dc67fea7f89555da1d0b60356863290ca5668160d6d97fe9
 
 def check_admin_token(token: str) -> bool:
     return hashlib.sha256(token.encode()).hexdigest() == ADMIN_TOKEN_HASH
+
+
+class BannedUser(Base):
+    __tablename__ = "banned_users"
+    id = Column(Integer, primary_key=True, index=True)
+    ip_address = Column(String, unique=True, nullable=False)
+    banned_at = Column(DateTime, default=now_rounded_to_minute)
+
+
+def is_banned(ip_address: str) -> bool:
+    db = SessionLocal()
+    banned = db.query(BannedUser).filter(
+        BannedUser.ip_address == ip_address).first()
+    db.close()
+    return banned is not None
+
+
+def ban_user(ip_address: str):
+    db = SessionLocal()
+    if not db.query(BannedUser).filter(BannedUser.ip_address == ip_address).first():
+        banned = BannedUser(ip_address=ip_address)
+        db.add(banned)
+        db.commit()
+    db.close()
