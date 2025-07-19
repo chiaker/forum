@@ -1,9 +1,28 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from .schemas import Topic, TopicCreate, Post, PostCreate
 from . import crud
 from src_b.api_v1.models import check_admin_token
 
 router = APIRouter()
+
+
+def censor_check(text: str) -> bool:
+    forbidden_words = ["лес", "дерево"]
+    for word in forbidden_words:
+        if word in text.lower():
+            return True
+    return False
+
+
+def get_client_ip(request: Request) -> str:
+    x_forwarded_for = request.headers.get("x-forwarded-for")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0]
+    elif request.client is not None:
+        ip = request.client.host
+    else:
+        ip = "unknown"
+    return ip
 
 
 @router.get("/topics", response_model=list[Topic])
@@ -20,7 +39,14 @@ def get_topic(topic_id: int):
 
 
 @router.post("/topics", response_model=Topic)
-def create_topic(topic: TopicCreate):
+def create_topic(topic: TopicCreate, request: Request):
+    client_ip = get_client_ip(request)
+    if crud.is_ip_banned(client_ip):
+        raise HTTPException(status_code=403, detail="Вы забанены")
+    if censor_check(topic.title) or censor_check(topic.content):
+        crud.ban_ip(client_ip)
+        raise HTTPException(
+            status_code=403, detail="Вы забанены за использование запрещённых слов")
     return crud.create_topic(topic)
 
 
@@ -41,7 +67,14 @@ def get_posts(topic_id: int):
 
 
 @router.post("/topics/{topic_id}/posts", response_model=Post)
-def create_post(topic_id: int, post: PostCreate):
+def create_post(topic_id: int, post: PostCreate, request: Request):
+    client_ip = get_client_ip(request)
+    if crud.is_ip_banned(client_ip):
+        raise HTTPException(status_code=403, detail="Вы забанены")
+    if censor_check(post.content):
+        crud.ban_ip(client_ip)
+        raise HTTPException(
+            status_code=403, detail="Вы забанены за использование запрещённых слов")
     created_post = crud.create_post(topic_id, post)
     if not created_post:
         raise HTTPException(status_code=404, detail="Топик не найден")
