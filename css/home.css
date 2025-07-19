@@ -79,10 +79,40 @@ h1{
   width: 100%;
   min-height: 170px;
 }
-
+.modal {
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(3px);
+	position: fixed; /* Фиксированная позиция */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  z-index: 1000;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
 .modal_content {
+	width: 400px;
+	height: 400px;
+	background-color: #D9D9D9;
+	border-radius: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 10px;
 }
 .modal_title {
 }
 .modal_input {
+}
+.modal_submit {
+	font-family: "Josefin Sans", sans-serif;
+}
+.modal_close {
 }

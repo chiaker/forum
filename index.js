@@ -4,30 +4,46 @@ const app = () => {
     posts: []
   };
 
+	const openBtn = document.getElementById('openBtn');
+	const closeBtn = document.getElementById('closeBtn');
+
+	const openModal = () => {
+		document.querySelector('.modal_input').value = '';
+		form.style.display = 'flex';
+	}
+
+	const closeModal = () => {
+		form.style.display = 'none';
+	}
+
+	openBtn.addEventListener('click', openModal);
+	closeBtn.addEventListener('click', closeModal);
+
   const loadTopics = () => {
-	  fetch("/api/v1/topics")
-	    .then(response => response.json())
-	    .then(data => {
-	      state.topics = data;
-	      renderTopic();
-	    })
-	    .catch(error => {
-	      console.error("Ошибка загрузки тем:", error);
-	    });
- renderTopic();
+   fetch("/api/v1/topics")
+    .then(response => response.json())
+    .then(data => {
+      state.topics = data;
+      renderTopic();
+    })
+    .catch(error => {
+      console.error("Ошибка загрузки тем:", error);
+    });
   };
 
-  const loadPosts = (topicId) => {
-    fetch(`/api/v1/topics/${topicId}/posts`)
-      .then(response => response.json())
-      .then(data => {
-        state.posts = data;
-        renderPost(); // только здесь вызываем
-      })
-      .catch(error => {
-        console.error("Ошибка загрузки постов:", error);
-      });
-  };
+	// Для постов
+
+//  const loadPosts = (topicId) => {
+//    fetch(`/api/v1/topics/${topicId}/posts`)
+//      .then(response => response.json())
+//      .then(data => {
+//        state.posts = data;
+//        renderPost();
+//      })
+//      .catch(error => {
+//        console.error("Ошибка загрузки постов:", error);
+//      });
+//  };
 
   const renderTopic = () => {
     const root = document.getElementById('topic-list');
@@ -41,53 +57,54 @@ const app = () => {
       </div>
 			
 			`
-      //      const item = document.createElement('button');
-      //      item.className = "post-item__title";
-      //      item.textContent = topic.title;
-      //      item.id = topic.id;
-      //      item.addEventListener('click', () => {
-      //        loadPosts(topic.id);
-      //      });
     });
   };
 
-  const renderPost = () => {
-    const root = document.getElementById('post-list');
-    root.innerHTML = "";
+	// Для постов
 
-    state.posts.forEach((post) => {
-      const col = document.createElement('div');
-      col.className = "col-md-6";
-
-      const card = document.createElement('div');
-      card.className = "card h-100";
-
-      const cardBody = document.createElement('div');
-      cardBody.className = "card-body";
-
-      const content = document.createElement('p');
-      content.className = "card-text";
-      content.textContent = post.content;
-
-      cardBody.append(content);
-      card.append(cardBody);
-      col.append(card);
-      root.append(col);
-    });
-  };
+//  const renderPost = () => {
+//    const root = document.getElementById('post-list');
+//    root.innerHTML = "";
+//
+//    state.posts.forEach((post) => {
+//      const col = document.createElement('div');
+//      col.className = "col-md-6";
+//
+//      const card = document.createElement('div');
+//      card.className = "card h-100";
+//
+//      const cardBody = document.createElement('div');
+//      cardBody.className = "card-body";
+//
+//      const content = document.createElement('p');
+//      content.className = "card-text";
+//      content.textContent = post.content;
+//
+//      cardBody.append(content);
+//      card.append(cardBody);
+//      col.append(card);
+//      root.append(col);
+//    });
+//  };
 
   loadTopics();
 
 	const form = document.getElementById('addTopicForm');
+	const modalContent = document.querySelector('.modal_content');
+
 	form.addEventListener('submit', (e) => {
 		e.preventDefault();
 
 		const formData = new FormData(form);
 
+		const topicTitle = formData.get('topicTitle');
+		const topicContent = formData.get('content');
+
 		const jsonData = {
-			title: formData.title,
-			content: 'content'
+			content: topicContent || 'content',
+			title: topicTitle
 		}
+		console.log(formData.topicTitle);
 
 		fetch(form.action, {
 			method: 'POST',
@@ -96,7 +113,16 @@ const app = () => {
 			},
 			body: json.stringify(jsonData)
 		})
+
+		loadTopics();
+		closeModal();
 	})
+	
+	form.addEventListener('click', (e) => {
+  	if (!modalContent.contains(e.target)) {
+    	closeModal();
+  	}
+	});
 };
 
 app();

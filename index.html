@@ -21,17 +21,20 @@
           <span class="post-item__text-contant">text contant...</span>
         </div>
       </div>
-      <button class="create-new-post__button" id="addTopicBtn" type="button">Create new post</button>
+      <button class="create-new-post__button" id="openBtn" type="button">Create new post</button>
     </main>
     <footer class="footer">
       <div class="line-bottom"></div>
     </footer>
   </div>
 
-	<form id="addTopicForm" action="/api/v1/topics">
-		<title class="modal_title">Тема топика</title>
-		<input type="text" name="topicTitle" class="modal_input">
-		<input type="submit" value="Создать" class="modal_submit">
+	<form class="modal" id="addTopicForm" action="/api/v1/topics">
+		<div class="modal_content" id="modal_content">
+			<p class="modal_title">Post title</p>
+			<input type="text" name="topicTitle" class="modal_input">
+			<input type="submit" value="Create" class="modal_submit">
+			<button type="button" class="modal_close" id="closeBtn">Close</button>
+		</div>
 	</form>
 
 	<script src="index.js"></script>
