@@ -104,7 +104,6 @@ const app = () => {
 			content: topicContent || 'content',
 			title: topicTitle
 		}
-		console.log(formData.topicTitle);
 
 		fetch(form.action, {
 			method: 'POST',
