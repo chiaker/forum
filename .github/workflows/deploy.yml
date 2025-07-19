@@ -16,8 +16,8 @@ jobs:
       - name: Copy SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25518
+          chmod 600 ~/.ssh/id_ed25518
 
       - name: Add server to known_hosts
         run: |
@@ -26,5 +26,5 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -i ~/.ssh/id_ed25519 root_server@62.183.54.203 'cd /home/root_server/forum/forum && git pull origin main'
+          ssh -i ~/.ssh/id_ed25518 root_server@62.183.54.203 -p 10022 'cd /home/root_server/forum/forum && git pull origin main'
 
