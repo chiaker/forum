@@ -21,7 +21,8 @@ jobs:
 
       - name: Add server to known_hosts
         run: |
-          ssh-keyscan -H web.shuman.keenetic.pro >> ~/.ssh/known_hosts
+          
+          touch ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         run: |
