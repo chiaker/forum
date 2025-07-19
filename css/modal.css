@@ -1,0 +1,67 @@
+.modal {
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(3px);
+	position: fixed; /* Фиксированная позиция */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  z-index: 1000;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+.modal_content {
+	width: 400px;
+	height: 400px;
+	background-color: #D9D9D9;
+	border-radius: 15px;
+	display: inline-flex;
+	flex-direction: column;
+  padding: 25px;
+	gap: 25px;
+}
+.modal_block{
+  display: inline-flex;
+  flex-direction: column;
+}
+.modal_title {
+}
+.modal_input {
+  padding: 5px;
+  border: 2px solid #CBC5B9;
+  border-radius: 5px;
+}
+.modal_input-content{
+
+}
+.modal_input::placeholder {
+  font-weight: 500;
+}
+.modal_input:focus {
+  border: 2px solid #313D65;
+  outline: none;
+  background-color: #f5f5f5;
+}
+.modal_submit {
+	font-family: "Josefin Sans", sans-serif;
+  margin: 0 auto;
+  padding: 10px 20px;
+  border: none;
+}
+.modal_submit:hover {
+  background-color: #313D65;
+  color: #fff;
+  border-radius: 7px;
+}
+
+
+.modal_close {
+}
+.modal_close:hover {
+  color: #ca0000;
+}

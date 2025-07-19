@@ -1,127 +1,102 @@
+// Главная функция приложения, которая запускается сразу
 const app = () => {
+  // Состояние приложения, хранит данные тем и постов
   const state = {
-    topics: [],
-    posts: []
+    topics: [],  // Массив для хранения списка тем
+    posts: []    // Массив для хранения постов (пока не используется)
   };
 
-	const openBtn = document.getElementById('openBtn');
-	const closeBtn = document.getElementById('closeBtn');
+  // Получаем кнопки открытия и закрытия модального окна
+  const openBtn = document.getElementById('openBtn');
+  const closeBtn = document.getElementById('closeBtn');
 
-	const openModal = () => {
-		document.querySelector('.modal_input').value = '';
-		form.style.display = 'flex';
-	}
+  // Функция открытия модального окна для создания новой темы
+  const openModal = () => {
+    document.querySelector('.modal_input').value = ''; // Очищаем поле ввода
+    form.style.display = 'flex'; // Показываем модальное окно
+  };
 
-	const closeModal = () => {
-		form.style.display = 'none';
-	}
+  // Функция закрытия модального окна
+  const closeModal = () => {
+    form.style.display = 'none'; // Скрываем модальное окно
+  };
 
-	openBtn.addEventListener('click', openModal);
-	closeBtn.addEventListener('click', closeModal);
+  // Вешаем обработчики на кнопки
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
 
+  // Функция загрузки списка тем с сервера
   const loadTopics = () => {
-  fetch("/api/v1/topics")
-    .then(response => response.json())
-    .then(data => {
-      state.topics = data;
-      renderTopic();
-    })
-    .catch(error => {
-      console.error("Ошибка загрузки тем:", error);
-    });
+    fetch("/api/v1/topics")
+      .then(response => response.json()) // Преобразуем ответ в JSON
+      .then(data => {
+        state.topics = data; // Сохраняем темы в состояние
+        renderTopic(); // Отрисовываем темы
+      })
+      .catch(error => {
+        console.error("Ошибка загрузки тем:", error); // Обработка ошибок
+      });
   };
 
-	// Для постов
-
-//  const loadPosts = (topicId) => {
-//    fetch(`/api/v1/topics/${topicId}/posts`)
-//      .then(response => response.json())
-//      .then(data => {
-//        state.posts = data;
-//        renderPost();
-//      })
-//      .catch(error => {
-//        console.error("Ошибка загрузки постов:", error);
-//      });
-//  };
-
+  // Функция отрисовки списка тем
   const renderTopic = () => {
-    const root = document.getElementById('topic-list');
-    root.innerHTML = "";
+    const root = document.getElementById('topic-list'); // Контейнер для тем
+    root.innerHTML = ""; // Очищаем контейнер
 
+    // Для каждой темы создаем HTML-элемент
     state.topics.forEach((topic) => {
       root.innerHTML += `
-			<div class="post-item" id="${topic.id}">
+      <div class="post-item" id="${topic.id}">
         <h2 class="post-item__title">${topic.title}</h2>
         <span class="post-item__text-contant">${topic.content}</span>
       </div>
-			
-			`
+      `;
     });
   };
 
-	// Для постов
-
-//  const renderPost = () => {
-//    const root = document.getElementById('post-list');
-//    root.innerHTML = "";
-//
-//    state.posts.forEach((post) => {
-//      const col = document.createElement('div');
-//      col.className = "col-md-6";
-//
-//      const card = document.createElement('div');
-//      card.className = "card h-100";
-//
-//      const cardBody = document.createElement('div');
-//      cardBody.className = "card-body";
-//
-//      const content = document.createElement('p');
-//      content.className = "card-text";
-//      content.textContent = post.content;
-//
-//      cardBody.append(content);
-//      card.append(cardBody);
-//      col.append(card);
-//      root.append(col);
-//    });
-//  };
-
+  // Загружаем темы при старте приложения
   loadTopics();
 
-	const form = document.getElementById('addTopicForm');
-	const modalContent = document.querySelector('.modal_content');
+  // Получаем форму и контент модального окна
+  const form = document.getElementById('addTopicForm');
+  const modalContent = document.querySelector('.modal_content');
 
-	form.addEventListener('submit', (e) => {
-		e.preventDefault();
+  // Обработчик отправки формы
+  form.addEventListener('submit', (e) => {
+    e.preventDefault(); // Отменяем стандартное поведение формы
 
-		const formData = new FormData(form);
+    // Получаем данные из формы
+    const formData = new FormData(form);
+    const topicTitle = formData.get('topicTitle');
+    const topicContent = formData.get('topicContent');
 
-		const topicTitle = formData.get('topicTitle');
-		const topicContent = formData.get('content');
+    // Формируем данные для отправки
+    const jsonData = {
+      content: topicContent || 'content', // Значение по умолчанию
+      title: topicTitle
+    };
 
-		const jsonData = {
-			content: topicContent || 'content',
-			title: topicTitle
-		}
+    // Отправляем данные на сервер
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonData) // Преобразуем объект в JSON
+    });
 
-		fetch(form.action, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(jsonData)
-		})
-
-		loadTopics();
-		closeModal();
-	})
-	
-	form.addEventListener('click', (e) => {
-  	if (!modalContent.contains(e.target)) {
-    	closeModal();
-  	}
-	});
+    // Обновляем список тем и закрываем модальное окно
+    loadTopics();
+    closeModal();
+  });
+  
+  // Закрытие модального окна при клике вне его контента
+  form.addEventListener('click', (e) => {
+    if (!modalContent.contains(e.target)) {
+      closeModal();
+    }
+  });
 };
 
+// Запускаем приложение
 app();
