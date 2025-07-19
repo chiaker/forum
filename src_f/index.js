@@ -6,7 +6,7 @@ const app = () => {
 
 
   const loadTopics = () => {
-    fetch("http://192.168.0.69:8000/api/v1/topics")
+    fetch("/api/v1/topics")
       .then(response => response.json())
       .then(data => {
         state.topics = data;
@@ -18,7 +18,7 @@ const app = () => {
   };
 
   const loadPosts = (topicId) => {
-    fetch(`http://192.168.0.69:8000/api/v1/topics/${topicId}/posts`)
+    fetch(`/api/v1/topics/${topicId}/posts`)
       .then(response => response.json())
       .then(data => {
         state.posts = data;
@@ -34,20 +34,20 @@ const app = () => {
     root.innerHTML = "";
 
     state.topics.forEach((topic) => {
-			root.innerHTML += `
+      root.innerHTML += `
 			<div class="post-item" id="${topic.id}">
         <h2 class="post-item__title">${topic.title}</h2>
         <span class="post-item__text-contant">${topic.content}</span>
       </div>
 			
 			`
-//      const item = document.createElement('button');
-//      item.className = "post-item__title";
-//      item.textContent = topic.title;
-//      item.id = topic.id;
-//      item.addEventListener('click', () => {
-//        loadPosts(topic.id);
-//      });
+      //      const item = document.createElement('button');
+      //      item.className = "post-item__title";
+      //      item.textContent = topic.title;
+      //      item.id = topic.id;
+      //      item.addEventListener('click', () => {
+      //        loadPosts(topic.id);
+      //      });
     });
   };
 
