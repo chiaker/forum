@@ -26,5 +26,5 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -i ~/.ssh/id_ed25519 root_server@web.shuman.keenetic.pro 'cd /home/root_server/forum/forum && git pull origin main && source /home/root_server/forum/forum/venv/bin/activate'
+          ssh -i ~/.ssh/github_deploy_key root_server@web.shuman.keenetic.pro 'cd /home/root_server/forum/forum && git pull origin main && source /home/root_server/forum/forum/venv/bin/activate'
 
