@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 def censor_check(text: str) -> bool:
-    forbidden_words = ["лес", "дерево"]
+    forbidden_words = []
     for word in forbidden_words:
         if word in text.lower():
             return True
