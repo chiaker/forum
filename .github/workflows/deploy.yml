@@ -26,5 +26,5 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh -i ~/.ssh/id_ed25519 root_server@ssh.shuman.keenetic.pro 'cd /home/root_server/forum/forum && git pull origin main'
+          ssh -i ~/.ssh/id_ed25519 root_server@62.183.54.203 'cd /home/root_server/forum/forum && git pull origin main'
 
