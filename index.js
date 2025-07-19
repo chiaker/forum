@@ -38,6 +38,18 @@ const app = () => {
       });
   };
 
+	const loadPosts = (topicId) => {
+    fetch(`/api/v1/topics/${topicId}/posts`)
+      .then(response => response.json())
+      .then(data => {
+        state.posts = data;
+        renderPost();
+      })
+      .catch(error => {
+        console.error("Ошибка загрузки постов:", error);
+      });
+  };
+
   // Функция отрисовки списка тем
   const renderTopic = () => {
     const root = document.getElementById('topic-list'); // Контейнер для тем
@@ -54,6 +66,31 @@ const app = () => {
     });
   };
 
+  const renderPost = () => {
+    const root = document.getElementById('post-list');
+    root.innerHTML = "";
+
+    state.posts.forEach((post) => {
+      const col = document.createElement('div');
+      col.className = "col-md-6";
+
+      const card = document.createElement('div');
+      card.className = "card h-100";
+
+      const cardBody = document.createElement('div');
+      cardBody.className = "card-body";
+
+      const content = document.createElement('p');
+      content.className = "card-text";
+      content.textContent = post.content;
+
+      cardBody.append(content);
+      card.append(cardBody);
+      col.append(card);
+      root.append(col);
+    });
+  };
+	
   // Загружаем темы при старте приложения
   loadTopics();
 
@@ -64,10 +101,10 @@ const app = () => {
   // Обработчик отправки формы
   form.addEventListener('submit', (e) => {
     e.preventDefault(); // Отменяем стандартное поведение формы
+		const submitBtn = document.getElementById('submitBtn');
 		submitBtn.disabled = true;
     // Получаем данные из формы
     const formData = new FormData(form);
-		const submitBtn = document.getElementById('submitBtn');
     const topicTitle = formData.get('topicTitle');
     const topicContent = formData.get('topicContent');
 
