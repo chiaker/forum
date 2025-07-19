@@ -27,10 +27,10 @@
 	<form class="modal" id="addTopicForm" action="/api/v1/topics">
 		<div class="modal_content" id="modal_content">
 			<p class="modal_title">Post title</p>
-			<input type="text" name="topicTitle" class="modal_input">
+			<input type="text" name="topicTitle" class="modal_input" autocomplete="new-password">
 			<p class="modal_title">Post content</p>
-			<input type="text" name="topicContent" class="modal_input">
-			<input type="submit" value="Create" class="modal_submit">
+			<input type="text" name="topicContent" class="modal_input" autocomplete="new-password">
+			<input type="submit" value="Create" id="submitBtn" class="modal_submit">
 			<button type="button" class="modal_close" id="closeBtn">Close</button>
 		</div>
 	</form>

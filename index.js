@@ -12,7 +12,7 @@ const app = () => {
 
   // Функция открытия модального окна для создания новой темы
   const openModal = () => {
-    document.querySelector('.modal_input').value = ''; // Очищаем поле ввода
+    document.querySelectorAll('.modal_input').forEach((input => input.value = '')); // Очищаем поля ввода
     form.style.display = 'flex'; // Показываем модальное окно
   };
 
@@ -64,9 +64,10 @@ const app = () => {
   // Обработчик отправки формы
   form.addEventListener('submit', (e) => {
     e.preventDefault(); // Отменяем стандартное поведение формы
-
+		submitBtn.disabled = true;
     // Получаем данные из формы
     const formData = new FormData(form);
+		const submitBtn = document.getElementById('submitBtn');
     const topicTitle = formData.get('topicTitle');
     const topicContent = formData.get('topicContent');
 
@@ -83,11 +84,14 @@ const app = () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(jsonData) // Преобразуем объект в JSON
-    });
-
-    // Обновляем список тем и закрываем модальное окно
-    loadTopics();
-    closeModal();
+    })
+		.then(() => {
+			// Обновляем список тем и закрываем модальное окно
+			loadTopics();
+			submitBtn.disabled = false;
+			closeModal();
+		});
+    
   });
   
   // Закрытие модального окна при клике вне его контента
