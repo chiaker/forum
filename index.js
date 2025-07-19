@@ -111,7 +111,7 @@ const app = () => {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: json.stringify(jsonData)
+			body: JSON.stringify(jsonData)
 		})
 
 		loadTopics();
