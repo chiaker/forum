@@ -98,7 +98,7 @@ const app = () => {
 		const formData = new FormData(form);
 
 		const topicTitle = formData.get('topicTitle');
-		const topicContent = formData.get('content');
+		const topicContent = formData.get('topicContent');
 
 		const jsonData = {
 			content: topicContent || 'content',
