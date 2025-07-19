@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from src_b.api_v1.views import router
 from src_b.api_v1.models import init_db
 
+init_db()
+
 app = FastAPI()
 
 app.add_middleware(
@@ -14,6 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-init_db()
+
 
 app.include_router(router, prefix="/api/v1")
