@@ -71,8 +71,8 @@ h1 {
   color: #b9b8b8;
   position: absolute;
   left: 25px;
-  bottom: 10px;
-  margin-top: 10px;
+  top: 10px;
+  bottom: auto;
 }
 
 .create-new-post__button {
