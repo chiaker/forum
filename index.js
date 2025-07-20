@@ -101,7 +101,6 @@ const app = () => {
   // Обработчик отправки формы
   form.addEventListener('submit', (e) => {
     e.preventDefault(); // Отменяем стандартное поведение формы
-		form.reset()
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
     // Получаем данные из формы
@@ -114,7 +113,7 @@ const app = () => {
       content: topicContent || 'content', // Значение по умолчанию
       title: topicTitle
     };
-
+		form.reset()
     // Отправляем данные на сервер
     fetch(form.action, {
       method: 'POST',
