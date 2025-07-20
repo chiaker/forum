@@ -21,4 +21,4 @@ app.add_middleware(
 app.include_router(router, prefix="/api/v1")
 app.mount("/", StaticFiles(directory="/home/root_server/forum/forum",
           html=True), name="static")
-#app.mount("/css", StaticFiles(directory="/home/root_server/forum/forum/css"), name="css")
+app.mount("/css", StaticFiles(directory="/home/root_server/forum/forum/css"), name="css")
