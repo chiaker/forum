@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('/forum/css/home.css');
+@import url('/forum/css/modal.css');
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+
+html, body, div, span, applet, object, iframe h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
@@ -24,6 +26,7 @@ time, mark, audio, video {
 /* Устанавливаем box-sizing для всех элементов */
 *, *::before, *::after {
   box-sizing: border-box;
+  transition: all 0.3s;
 }
 
 /* Убираем списочные стили */

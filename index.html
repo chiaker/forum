@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/index.css">
-  <link rel="stylesheet" href="css/home.css">
   <title>Forum</title>
 </head>
 
@@ -15,27 +14,31 @@
       <h1>Welcome To Forum</h1>
     </header>
     <main class="main">
-      <div class="posts-list" id="topic-list">
-      </div>
-      <button class="create-new-post__button" id="openBtn" type="button">Create new post</button>
-    </main>
-    <footer class="footer">
+      <section class="posts">
+        <div class="posts-list" id="topic-list">
+        </div>
+        <button class="create-new-post__button" id="openBtn" type="button">Create new post</button>
+      </section>
       <div class="line-bottom"></div>
-    </footer>
+    </main>
   </div>
 
 	<form class="modal" id="addTopicForm" action="/api/v1/topics">
 		<div class="modal_content" id="modal_content">
-			<p class="modal_title">Post title</p>
-			<input type="text" name="topicTitle" class="modal_input" autocomplete="new-password">
-			<p class="modal_title">Post content</p>
-			<input type="text" name="topicContent" class="modal_input" autocomplete="new-password">
-			<input type="submit" value="Create" id="submitBtn" class="modal_submit">
+			<div class="modal_block">
+			  <label class="modal_title">Post title</label>
+  			<input type="text" name="topicTitle" class="modal_input" placeholder="your title">
+			</div>
+			<div class="modal_block">
+			  <label class="modal_title">Post content</label>
+  			<input type="text" name="topicContent" class="modal_input modal_input-content" placeholder="your content">
+			</div>
+			<input type="submit" value="Create" class="modal_submit">
 			<button type="button" class="modal_close" id="closeBtn">Close</button>
 		</div>
 	</form>
 
-	<script src="index.js"></script>
+  <script src="index.js"></script>
 </body>
 
 </html>
