@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from .models import SessionLocal, Topic, Post, BannedIP
+from .models import SessionLocal, Topic, Post, BannedUser
 from .schemas import TopicCreate, PostCreate
 from datetime import datetime, timezone
 
@@ -87,23 +87,17 @@ def delete_post_by_topic(topic_id: int, post_id: int):
     return post
 
 
-def get_all_banned_ips():
+def is_user_banned(user_id: str) -> bool:
     db = SessionLocal()
-    ips = db.query(BannedIP.ip).all()
-    db.close()
-    return set(ip for (ip,) in ips)
-
-
-def is_ip_banned(ip: str) -> bool:
-    db = SessionLocal()
-    exists = db.query(BannedIP).filter(BannedIP.ip == ip).first() is not None
+    exists = db.query(BannedUser).filter(
+        BannedUser.user_id == user_id).first() is not None
     db.close()
     return exists
 
 
-def ban_ip(ip: str):
+def ban_user(user_id: str):
     db = SessionLocal()
-    if not db.query(BannedIP).filter(BannedIP.ip == ip).first():
-        db.add(BannedIP(ip=ip, banned_at=datetime.now(timezone.utc)))
+    if not db.query(BannedUser).filter(BannedUser.user_id == user_id).first():
+        db.add(BannedUser(user_id=user_id, banned_at=datetime.now(timezone.utc)))
         db.commit()
     db.close()

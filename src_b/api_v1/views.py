@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Query, Request
+import uuid
+from fastapi import APIRouter, HTTPException, Query, Request, Response, Cookie
 from .schemas import Topic, TopicCreate, Post, PostCreate
 from . import crud
 from src_b.api_v1.models import check_admin_token
@@ -7,7 +8,7 @@ router = APIRouter()
 
 
 def censor_check(text: str) -> bool:
-    forbidden_words = []
+    forbidden_words = ["казино", "криптовалюта", "крипта"]
     for word in forbidden_words:
         if word in text.lower():
             return True
@@ -25,6 +26,13 @@ def get_client_ip(request: Request) -> str:
     return ip
 
 
+def get_user_id(request: Request, user_id: str = Cookie(default=None)):
+    if user_id is None:
+        # Генерируем новый UUID
+        user_id = str(uuid.uuid4())
+    return user_id
+
+
 @router.get("/topics", response_model=list[Topic])
 def get_topics():
     return crud.get_all_topics()
@@ -39,12 +47,16 @@ def get_topic(topic_id: int):
 
 
 @router.post("/topics", response_model=Topic)
-def create_topic(topic: TopicCreate, request: Request):
-    client_ip = get_client_ip(request)
-    if crud.is_ip_banned(client_ip):
+def create_topic(topic: TopicCreate, request: Request, response: Response, user_id: str = Cookie(default=None)):
+    user_id = get_user_id(request, user_id)
+    # Устанавливаем куку, если её не было
+    if user_id not in request.cookies:
+        response.set_cookie(key="user_id", value=user_id,
+                            httponly=True, max_age=60*60*24*365)
+    if crud.is_user_banned(user_id):
         raise HTTPException(status_code=403, detail="Вы забанены")
     if censor_check(topic.title) or censor_check(topic.content):
-        crud.ban_ip(client_ip)
+        crud.ban_user(user_id)
         raise HTTPException(
             status_code=403, detail="Вы забанены за использование запрещённых слов")
     return crud.create_topic(topic)
@@ -67,12 +79,15 @@ def get_posts(topic_id: int):
 
 
 @router.post("/topics/{topic_id}/posts", response_model=Post)
-def create_post(topic_id: int, post: PostCreate, request: Request):
-    client_ip = get_client_ip(request)
-    if crud.is_ip_banned(client_ip):
+def create_post(topic_id: int, post: PostCreate, request: Request, response: Response, user_id: str = Cookie(default=None)):
+    user_id = get_user_id(request, user_id)
+    if user_id not in request.cookies:
+        response.set_cookie(key="user_id", value=user_id,
+                            httponly=True, max_age=60*60*24*365)
+    if crud.is_user_banned(user_id):
         raise HTTPException(status_code=403, detail="Вы забанены")
     if censor_check(post.content):
-        crud.ban_ip(client_ip)
+        crud.ban_user(user_id)
         raise HTTPException(
             status_code=403, detail="Вы забанены за использование запрещённых слов")
     created_post = crud.create_post(topic_id, post)

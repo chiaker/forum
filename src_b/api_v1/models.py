@@ -35,10 +35,10 @@ class Post(Base):
     topic = relationship("Topic", back_populates="posts")
 
 
-class BannedIP(Base):
-    __tablename__ = "banned_ips"
+class BannedUser(Base):
+    __tablename__ = "banned_users"
     id = Column(Integer, primary_key=True, index=True)
-    ip = Column(String, unique=True, nullable=False)
+    user_id = Column(String, unique=True, nullable=False)
     banned_at = Column(DateTime, default=lambda: datetime.now(
         timezone.utc), nullable=False)
 
