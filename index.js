@@ -38,7 +38,7 @@ const app = () => {
       });
   };
 
-	const loadPosts = (topicId) => {
+  const loadPosts = (topicId) => {
     fetch(`/api/v1/topics/${topicId}/posts`)
       .then(response => response.json())
       .then(data => {
@@ -57,10 +57,19 @@ const app = () => {
 
     // Для каждой темы создаем HTML-элемент
     state.topics.forEach((topic) => {
+      // Форматируем дату без секунд
+      let date = new Date(topic.created_at);
+      let day = String(date.getDate()).padStart(2, '0');
+      let month = String(date.getMonth() + 1).padStart(2, '0');
+      let year = date.getFullYear();
+      let hours = String(date.getHours()).padStart(2, '0');
+      let minutes = String(date.getMinutes()).padStart(2, '0');
+      let formatted = `${day}.${month}.${year} ${hours}:${minutes}`;
       root.innerHTML += `
       <div class="post-item" id="${topic.id}">
         <h2 class="post-item__title">${topic.title}</h2>
         <span class="post-item__text-contant">${topic.content}</span>
+        <div class="post-item__date">${formatted}</div>
       </div>
       `;
     });
@@ -90,7 +99,7 @@ const app = () => {
       root.append(col);
     });
   };
-	
+
   // Загружаем темы при старте приложения
   loadTopics();
 
@@ -101,8 +110,8 @@ const app = () => {
   // Обработчик отправки формы
   form.addEventListener('submit', (e) => {
     e.preventDefault(); // Отменяем стандартное поведение формы
-		const submitBtn = document.getElementById('submitBtn');
-		submitBtn.disabled = true;
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
     // Получаем данные из формы
     const formData = new FormData(form);
     const topicTitle = formData.get('topicTitle');
@@ -122,15 +131,15 @@ const app = () => {
       },
       body: JSON.stringify(jsonData) // Преобразуем объект в JSON
     })
-		.then(() => {
-			// Обновляем список тем и закрываем модальное окно
-			loadTopics();
-			submitBtn.disabled = false;
-			closeModal();
-		});
-    
+      .then(() => {
+        // Обновляем список тем и закрываем модальное окно
+        loadTopics();
+        submitBtn.disabled = false;
+        closeModal();
+      });
+
   });
-  
+
   // Закрытие модального окна при клике вне его контента
   form.addEventListener('click', (e) => {
     if (!modalContent.contains(e.target)) {
