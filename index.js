@@ -101,6 +101,7 @@ const app = () => {
   // Обработчик отправки формы
   form.addEventListener('submit', (e) => {
     e.preventDefault(); // Отменяем стандартное поведение формы
+		form.reset()
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
     // Получаем данные из формы
@@ -125,8 +126,8 @@ const app = () => {
       .then(() => {
         // Обновляем список тем и закрываем модальное окно
         loadTopics();
-        submitBtn.disabled = false;
         closeModal();
+				submitBtn.disabled = false;
       });
 
   });

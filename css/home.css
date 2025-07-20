@@ -31,7 +31,7 @@ h1 {
   padding: 35px;
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
-  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.13), 0 1.5px 0 0 #fff;
+	box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.13), 0 1.5px 0 0 #fff;
   margin-bottom: 45px;
   height: 515px;
   overflow-y: auto;
