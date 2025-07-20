@@ -44,7 +44,6 @@ h1 {
   padding: 24px 25px;
   border-radius: 15px;
   cursor: pointer;
-  position: relative;
 }
 
 .post-item__title {
@@ -64,15 +63,6 @@ h1 {
 .post-item__text-contant {
   font-size: 25px;
   margin-left: 30px;
-}
-
-.post-item__date {
-  font-size: 14px;
-  color: #b9b8b8;
-  position: absolute;
-  left: 25px;
-  top: 10px;
-  bottom: auto;
 }
 
 .create-new-post__button {

@@ -57,19 +57,10 @@ const app = () => {
 
     // Для каждой темы создаем HTML-элемент
     state.topics.forEach((topic) => {
-      // Форматируем дату без секунд
-      let date = new Date(topic.created_at);
-      let day = String(date.getDate()).padStart(2, '0');
-      let month = String(date.getMonth() + 1).padStart(2, '0');
-      let year = date.getFullYear();
-      let hours = String(date.getHours()).padStart(2, '0');
-      let minutes = String(date.getMinutes()).padStart(2, '0');
-      let formatted = `${day}.${month}.${year} ${hours}:${minutes}`;
       root.innerHTML += `
       <div class="post-item" id="${topic.id}">
         <h2 class="post-item__title">${topic.title}</h2>
         <span class="post-item__text-contant">${topic.content}</span>
-        <div class="post-item__date">${formatted}</div>
       </div>
       `;
     });
