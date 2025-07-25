@@ -28,6 +28,8 @@ const app = () => {
 
   // 🔻 Загрузка тем
   const loadTopics = () => {
+    console.log("Вызвана loadTopics");
+
     fetch("/api/v1/topics")
       .then((response) => response.json())
       .then((data) => {
