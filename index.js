@@ -1,5 +1,4 @@
 const app = () => {
-  console.log("index.js загружен!");
 
   const state = {
     topics: [],
@@ -30,7 +29,6 @@ const app = () => {
 
   // 🔻 Загрузка тем
   const loadTopics = () => {
-    console.log("Вызвана loadTopics");
 
     fetch("/api/v1/topics")
       .then((response) => response.json())
@@ -73,7 +71,6 @@ const app = () => {
   // 🔻 Отрисовка тем
   const renderTopic = () => {
     const root = document.getElementById("topic-list");
-    console.log("Отрисовка тем, найдено:", state.topics.length); // <-- ДОБАВЬ
     root.innerHTML = ""; // очищаем
 
     state.topics.forEach((topic) => {
