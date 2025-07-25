@@ -1,5 +1,4 @@
 const app = () => {
-  // caskod;sakdljasldk
   const state = {
     topics: [],
     posts: [],
