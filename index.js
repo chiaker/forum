@@ -55,61 +55,66 @@ const app = () => {
   const renderPost = (postList, topicId) => {
     const root = document.getElementById(`postsList_${topicId}`);
     if (!root) return;
-
     root.innerHTML =
       postList.length > 0
         ? postList
-            .map(
-              (post) =>
-                `<div class="comment" id="comment_${post.id}">${post.content}</div>`
-            )
-            .join("")
+          .map(
+            (post) =>
+              `<div class="comment" id="comment_${post.id}">${post.content}</div>`
+          )
+          .join("")
         : "<div class='comment'>Нет комментариев</div>";
   };
 
-  state.topics.forEach((topic) => {
-    const topicId = topic.id.toString();
+  // 🔻 Отрисовка тем
+  const renderTopic = () => {
+    const root = document.getElementById("topic-list");
+    root.innerHTML = ""; // очищаем
 
-    const item = document.createElement("div");
-    item.className = "post-item";
-    item.id = topicId;
+    state.topics.forEach((topic) => {
+      const topicId = topic.id.toString();
 
-    item.innerHTML = `
-    <h2 class="post-item__title">${topic.title}</h2>
-    <span class="post-item__text-contant">${topic.content}</span>
-    <section class="comments" id="post_${topicId}" style="display:none">
-      <div class="comments-list" id="postsList_${topicId}"></div>
-      <form class="comment-add" id="addPostForm_${topicId}" autocomplete="off">
-        <input type="text" name="comment" id="addPostContent_${topicId}">
-        <input type="submit" value="Send" class="comment-btn">
-      </form>
-    </section>
-  `;
+      const item = document.createElement("div");
+      item.className = "post-item";
+      item.id = topicId;
 
-    item.querySelector("h2").addEventListener("click", (e) => {
-      e.stopPropagation();
+      item.innerHTML = `
+        <h2 class="post-item__title">${topic.title}</h2>
+        <span class="post-item__text-contant">${topic.content}</span>
+        <section class="comments" id="post_${topicId}" style="display:none">
+          <div class="comments-list" id="postsList_${topicId}"></div>
+          <form class="comment-add" id="addPostForm_${topicId}" autocomplete="off">
+            <input type="text" name="comment" id="addPostContent_${topicId}">
+            <input type="submit" value="Send" class="comment-btn">
+          </form>
+        </section>
+      `;
 
-      const isOpen = state.openedPost === topicId;
+      item.querySelector("h2").addEventListener("click", (e) => {
+        e.stopPropagation();
 
-      if (state.openedPost !== null && state.openedPost !== topicId) {
-        const prev = document.getElementById(`post_${state.openedPost}`);
-        if (prev) prev.style.display = "none";
-      }
+        const isOpen = state.openedPost === topicId;
 
-      if (!isOpen) {
-        const current = document.getElementById(`post_${topicId}`);
-        if (current) current.style.display = "flex";
-        state.openedPost = topicId;
-        loadPosts(topicId);
-      } else {
-        const current = document.getElementById(`post_${topicId}`);
-        if (current) current.style.display = "none";
-        state.openedPost = null;
-      }
+        if (state.openedPost !== null && state.openedPost !== topicId) {
+          const prev = document.getElementById(`post_${state.openedPost}`);
+          if (prev) prev.style.display = "none";
+        }
+
+        if (!isOpen) {
+          const current = document.getElementById(`post_${topicId}`);
+          if (current) current.style.display = "flex";
+          state.openedPost = topicId;
+          loadPosts(topicId);
+        } else {
+          const current = document.getElementById(`post_${topicId}`);
+          if (current) current.style.display = "none";
+          state.openedPost = null;
+        }
+      });
+
+      root.appendChild(item);
     });
-
-    root.appendChild(item);
-  });
+  };
 
   // 🔻 Добавление нового комментария через backend
   document.addEventListener("submit", (e) => {
