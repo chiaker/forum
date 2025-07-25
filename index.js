@@ -69,6 +69,7 @@ const app = () => {
   // 🔻 Отрисовка тем
   const renderTopic = () => {
     const root = document.getElementById("topic-list");
+    console.log("Отрисовка тем, найдено:", state.topics.length); // <-- ДОБАВЬ
     root.innerHTML = ""; // очищаем
 
     state.topics.forEach((topic) => {
