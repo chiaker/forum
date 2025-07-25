@@ -14,6 +14,9 @@
 	justify-content: center;
 	align-items: center;
 	gap: 10px;
+	animation-duration: 0.1s;
+	animation-timing-function: ease-in;
+	animation-iteration-count: 1;
 }
 .modal_content {
 	width: 400px;
@@ -64,4 +67,18 @@
 }
 .modal_close:hover {
   color: #ca0000;
+}
+
+@keyframes modal-open {
+	from{
+		opacity: 0;
+	}
+	to{
+		opacity: 100;
+	}
+}
+@keyframes modal-close {
+	to{
+		opacity: 0;
+	}
 }

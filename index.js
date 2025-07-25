@@ -1,143 +1,173 @@
-// Главная функция приложения, которая запускается сразу
 const app = () => {
-  // Состояние приложения, хранит данные тем и постов
   const state = {
-    topics: [],  // Массив для хранения списка тем
-    posts: []    // Массив для хранения постов (пока не используется)
+    topics: [],
+    posts: [],
+    openedPost: null,
   };
 
-  // Получаем кнопки открытия и закрытия модального окна
   const openBtn = document.getElementById('openBtn');
   const closeBtn = document.getElementById('closeBtn');
+  const form = document.getElementById('addTopicForm');
+  const modalContent = document.querySelector('.modal_content');
 
-  // Функция открытия модального окна для создания новой темы
   const openModal = () => {
-    document.querySelectorAll('.modal_input').forEach((input => input.value = '')); // Очищаем поля ввода
-    form.style.display = 'flex'; // Показываем модальное окно
+    document.querySelectorAll('.modal_input').forEach(input => input.value = '');
+    form.style.display = 'flex';
+    form.style.animationName = 'modal-open';
   };
 
-  // Функция закрытия модального окна
   const closeModal = () => {
-    form.style.display = 'none'; // Скрываем модальное окно
+    form.style.animationName = 'modal-close';
+    setTimeout(() => form.style.display = 'none', 100);
   };
 
-  // Вешаем обработчики на кнопки
   openBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
 
-  // Функция загрузки списка тем с сервера
+  // 🔻 Загрузка тем
   const loadTopics = () => {
     fetch("/api/v1/topics")
-      .then(response => response.json()) // Преобразуем ответ в JSON
+      .then(response => response.json())
       .then(data => {
-        state.topics = data; // Сохраняем темы в состояние
-        renderTopic(); // Отрисовываем темы
+        state.topics = data;
+        renderTopic();
       })
       .catch(error => {
-        console.error("Ошибка загрузки тем:", error); // Обработка ошибок
+        console.error("Ошибка загрузки тем:", error);
       });
   };
 
+  // 🔻 Загрузка комментариев по id темы
   const loadPosts = (topicId) => {
     fetch(`/api/v1/topics/${topicId}/posts`)
       .then(response => response.json())
       .then(data => {
         state.posts = data;
-        renderPost();
+        renderPost(data, topicId);
       })
       .catch(error => {
         console.error("Ошибка загрузки постов:", error);
       });
   };
 
-  // Функция отрисовки списка тем
-  const renderTopic = () => {
-    const root = document.getElementById('topic-list'); // Контейнер для тем
-    root.innerHTML = ""; // Очищаем контейнер
+  const renderPost = (postList, topicId) => {
+    const root = document.getElementById(`postsList_${topicId}`);
+    if (!root) return;
 
-    // Для каждой темы создаем HTML-элемент
-    state.topics.forEach((topic) => {
-      root.innerHTML += `
-      <div class="post-item" id="${topic.id}">
-        <h2 class="post-item__title">${topic.title}</h2>
-        <span class="post-item__text-contant">${topic.content}</span>
-      </div>
-      `;
-    });
+    root.innerHTML = postList.length > 0
+      ? postList.map(post => `<div class="comment" id="comment_${post.id}">${post.content}</div>`).join("")
+      : "<div class='comment'>Нет комментариев</div>";
   };
 
-  const renderPost = () => {
-    const root = document.getElementById('post-list');
+  const renderTopic = () => {
+    const root = document.getElementById('topic-list');
     root.innerHTML = "";
 
-    state.posts.forEach((post) => {
-      const col = document.createElement('div');
-      col.className = "col-md-6";
+    state.topics.forEach((topic) => {
+      const topicId = topic.id.toString();
 
-      const card = document.createElement('div');
-      card.className = "card h-100";
+      const item = document.createElement('div');
+      item.className = "post-item";
+      item.innerHTML = `
+        <h2 class="post-item__title">${topic.title}</h2>
+        <span class="post-item__text-contant">${topic.content}</span>
+        <section class="comments" id="post_${topicId}" style="display:none">
+          <div class="comments-list" id="postsList_${topicId}"></div>
+          <form class="comment-add" id="addPostForm_${topicId}" autocomplete="off">
+            <input type="text" name="comment" id="addPostContent_${topicId}">
+            <input type="submit" value="Send" class="comment-btn">
+          </form>
+        </section>
+      `;
 
-      const cardBody = document.createElement('div');
-      cardBody.className = "card-body";
+      item.addEventListener('click', () => {
+        const isOpen = state.openedPost === topicId;
 
-      const content = document.createElement('p');
-      content.className = "card-text";
-      content.textContent = post.content;
+        // Закрытие предыдущего открытого блока
+        if (state.openedPost !== null) {
+          const prev = document.getElementById(`post_${state.openedPost}`);
+          if (prev) prev.style.display = 'none';
+        }
 
-      cardBody.append(content);
-      card.append(cardBody);
-      col.append(card);
-      root.append(col);
+        if (!isOpen) {
+          const current = document.getElementById(`post_${topicId}`);
+          if (current) current.style.display = 'flex';
+          state.openedPost = topicId;
+          loadPosts(topicId);
+        } else {
+          state.openedPost = null;
+        }
+      });
+
+      root.appendChild(item);
     });
   };
 
-  // Загружаем темы при старте приложения
-  loadTopics();
+  // 🔻 Добавление нового комментария через backend
+  document.addEventListener('submit', (e) => {
+    if (e.target.classList.contains('comment-add')) {
+      e.preventDefault();
+      const form = e.target;
+      const topicId = form.id.split('_')[1];
+      const content = form.querySelector('input[name="comment"]').value.trim();
+      const submitBtn = form.querySelector('.comment-btn');
+      submitBtn.disabled = true;
 
-  // Получаем форму и контент модального окна
-  const form = document.getElementById('addTopicForm');
-  const modalContent = document.querySelector('.modal_content');
-
-  // Обработчик отправки формы
-  form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Отменяем стандартное поведение формы
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    // Получаем данные из формы
-    const formData = new FormData(form);
-    const topicTitle = formData.get('topicTitle');
-    const topicContent = formData.get('topicContent');
-
-    // Формируем данные для отправки
-    const jsonData = {
-      content: topicContent || 'content', // Значение по умолчанию
-      title: topicTitle
-    };
-		form.reset()
-    // Отправляем данные на сервер
-    fetch(form.action, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(jsonData) // Преобразуем объект в JSON
-    })
-      .then(() => {
-        // Обновляем список тем и закрываем модальное окно
-        loadTopics();
-        closeModal();
-				submitBtn.disabled = false;
-      });
-
+      fetch(`/api/v1/topics/${topicId}/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: content || "empty comment" })
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Ошибка отправки поста");
+          return res.json();
+        })
+        .then(() => {
+          form.reset();
+          loadPosts(topicId);
+        })
+        .catch(err => console.error(err))
+        .finally(() => submitBtn.disabled = false);
+    }
   });
 
-  // Закрытие модального окна при клике вне его контента
+  // 🔻 Создание новой темы через backend
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const topicTitle = form.querySelector('input[name="topicTitle"]').value.trim();
+    const topicContent = form.querySelector('input[name="topicContent"]').value.trim();
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    fetch('/api/v1/topics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: topicTitle || 'Untitled topic',
+        content: topicContent || 'No content',
+      })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Ошибка создания темы");
+        return res.json();
+      })
+      .then(() => {
+        closeModal();
+        loadTopics(); // загружаем заново
+      })
+      .catch(err => console.error(err))
+      .finally(() => submitBtn.disabled = false);
+  });
+
+  // Закрытие модалки по клику вне формы
   form.addEventListener('click', (e) => {
     if (!modalContent.contains(e.target)) {
       closeModal();
     }
   });
+
+  // 🚀 Старт
+  loadTopics();
 };
 
-// Запускаем приложение
 app();
