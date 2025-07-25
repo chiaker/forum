@@ -1,5 +1,6 @@
-console.log("index.js загружен!");
 const app = () => {
+  console.log("index.js загружен!");
+
   const state = {
     topics: [],
     posts: [],
