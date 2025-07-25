@@ -113,7 +113,7 @@ const app = () => {
       content: topicContent || 'content', // Значение по умолчанию
       title: topicTitle
     };
-
+		form.reset()
     // Отправляем данные на сервер
     fetch(form.action, {
       method: 'POST',
@@ -125,8 +125,8 @@ const app = () => {
       .then(() => {
         // Обновляем список тем и закрываем модальное окно
         loadTopics();
-        submitBtn.disabled = false;
         closeModal();
+				submitBtn.disabled = false;
       });
 
   });
