@@ -92,6 +92,7 @@ const app = () => {
       `;
 
       item.querySelector("h2").addEventListener("click", (e) => {
+        console.log("Клик по теме:", topicId); // <-- ДОБАВЬ
         e.stopPropagation();
 
         const isOpen = state.openedPost === topicId;
