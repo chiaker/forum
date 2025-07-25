@@ -1,3 +1,4 @@
+console.log("index.js загружен!");
 const app = () => {
   const state = {
     topics: [],
