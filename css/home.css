@@ -43,11 +43,11 @@ h1 {
   background-color: #CBC5B9;
   padding: 24px 25px;
   border-radius: 15px;
-  cursor: pointer;
 }
 
 .post-item__title {
   font-size: 40px;
+	cursor: pointer;
 }
 
 .post-item__title::after {
