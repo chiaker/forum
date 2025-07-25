@@ -15,17 +15,6 @@ def censor_check(text: str) -> bool:
     return False
 
 
-def get_client_ip(request: Request) -> str:
-    x_forwarded_for = request.headers.get("x-forwarded-for")
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(",")[0]
-    elif request.client is not None:
-        ip = request.client.host
-    else:
-        ip = "unknown"
-    return ip
-
-
 def get_user_id(request: Request, user_id: str = Cookie(default=None)):
     if user_id is None:
         # Генерируем новый UUID
@@ -49,7 +38,7 @@ def get_topic(topic_id: int):
 @router.post("/topics", response_model=Topic)
 def create_topic(topic: TopicCreate, request: Request, response: Response, user_id: str = Cookie(default=None)):
     user_id = get_user_id(request, user_id)
-    # Устанавливаем куку, если её не было
+
     if user_id not in request.cookies:
         response.set_cookie(key="user_id", value=user_id,
                             httponly=True, max_age=60*60*24*365)
@@ -59,6 +48,22 @@ def create_topic(topic: TopicCreate, request: Request, response: Response, user_
         crud.ban_user(user_id)
         raise HTTPException(
             status_code=403, detail="Вы забанены за использование запрещённых слов")
+
+    if not topic.title or topic.title.strip() == "":
+        raise HTTPException(
+            status_code=422, detail="Название топика не может быть пустым")
+    if not topic.content or topic.content.strip() == "":
+        raise HTTPException(
+            status_code=422, detail="Текст топика не может быть пустым")
+
+    if len(topic.title) > 40:
+        raise HTTPException(
+            status_code=422, detail="Название топика не может быть длиннее 40 символов")
+
+    if len(topic.content) > 3000:
+        raise HTTPException(
+            status_code=422, detail="Текст топика не может быть длиннее 3000 символов")
+
     return crud.create_topic(topic)
 
 
@@ -81,6 +86,7 @@ def get_posts(topic_id: int):
 @router.post("/topics/{topic_id}/posts", response_model=Post)
 def create_post(topic_id: int, post: PostCreate, request: Request, response: Response, user_id: str = Cookie(default=None)):
     user_id = get_user_id(request, user_id)
+
     if user_id not in request.cookies:
         response.set_cookie(key="user_id", value=user_id,
                             httponly=True, max_age=60*60*24*365)
@@ -90,7 +96,9 @@ def create_post(topic_id: int, post: PostCreate, request: Request, response: Res
         crud.ban_user(user_id)
         raise HTTPException(
             status_code=403, detail="Вы забанены за использование запрещённых слов")
+
     created_post = crud.create_post(topic_id, post)
+
     if not created_post:
         raise HTTPException(status_code=404, detail="Топик не найден")
     return created_post
