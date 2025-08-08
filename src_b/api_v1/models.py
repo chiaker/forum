@@ -43,6 +43,15 @@ class BannedUser(Base):
         timezone.utc), nullable=False)
 
 
+class AiAgentState(Base):
+    __tablename__ = "ai_agent_state"
+    id = Column(Integer, primary_key=True, index=True)
+    topic_id = Column(Integer, ForeignKey("topics.id"),
+                      unique=True, nullable=False)
+    last_post_at = Column(DateTime, nullable=True)
+    next_due_at = Column(DateTime, nullable=True)
+
+
 def init_db():
     Base.metadata.create_all(bind=engine)
 

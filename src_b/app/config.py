@@ -1,0 +1,7 @@
+import os
+
+AI_ENABLED = True
+AI_BASE_URL = "http://192.168.0.57:11444"
+AI_MODEL = "gemma3:27b"
+AI_MIN_DELAY_MINUTES = 1
+AI_MAX_DELAY_MINUTES = 3

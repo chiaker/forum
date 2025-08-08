@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from src_b.api_v1.views import router
 from src_b.api_v1.models import init_db
 from fastapi.staticfiles import StaticFiles
+from threading import Event
+from src_b.app.agent import start_agent
 
 init_db()
 
@@ -26,7 +28,17 @@ app.add_middleware(
 
 app.include_router(router, prefix="/api/v1")
 
+stop_event = Event()
 
+
+@app.on_event("startup")
+async def _on_startup():
+    start_agent(stop_event)
+
+
+@app.on_event("shutdown")
+async def _on_shutdown():
+    stop_event.set()
 
 app.mount("/", NoCacheStaticFiles(directory="/home/root_server/forum/forum",
           html=True), name="static")
