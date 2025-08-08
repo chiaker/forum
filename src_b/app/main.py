@@ -15,22 +15,17 @@ class NoCacheStaticFiles(StaticFiles):
 
 
 app = FastAPI()
-app.mount("/", NoCacheStaticFiles(directory="/home/root_server/forum/forum",
-          html=True), name="static")
-app.mount("/css", NoCacheStaticFiles(directory="/home/root_server/forum/forum/css"), name="css")
-
 
 app.add_middleware(
     CORSMiddleware,
-    # или ["http://127.0.0.1:5500", "https://web.shuman.keenetic.pro"]
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
 app.include_router(router, prefix="/api/v1")
-app.mount("/", StaticFiles(directory="/home/root_server/forum/forum",
+
+app.mount("/", NoCacheStaticFiles(directory="/home/root_server/forum/forum",
           html=True), name="static")
-app.mount("/css", StaticFiles(directory="/home/root_server/forum/forum/css"), name="css")
+app.mount("/css", NoCacheStaticFiles(directory="/home/root_server/forum/forum/css"), name="css")
