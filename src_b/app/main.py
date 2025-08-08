@@ -26,6 +26,11 @@ app.add_middleware(
 
 app.include_router(router, prefix="/api/v1")
 
+
+@app.get("/api/v1/health")
+async def health():
+    return {"status": "ok"}
+
 app.mount("/", NoCacheStaticFiles(directory="/home/root_server/forum/forum",
           html=True), name="static")
 app.mount("/css", NoCacheStaticFiles(directory="/home/root_server/forum/forum/css"), name="css")
