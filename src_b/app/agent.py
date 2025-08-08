@@ -10,7 +10,7 @@ from src_b.api_v1.models import SessionLocal, Topic, Post, AiAgentState
 
 
 def _now():
-    return datetime.now(timezone.utc)
+    return datetime.utcnow()
 
 
 def _random_delay():
@@ -63,7 +63,8 @@ def _pick_due_topics(db: SessionLocal) -> list[Topic]:
 
 
 def _schedule_next(db: SessionLocal, topic_id: int):
-    state = _ensure_state(db, topic_id)
+    state = db.query(AiAgentState).filter(
+        AiAgentState.topic_id == topic_id).first()
     last_post = (
         db.query(Post)
         .filter(Post.topic_id == topic_id)
@@ -71,12 +72,19 @@ def _schedule_next(db: SessionLocal, topic_id: int):
         .first()
     )
     base_time = last_post.created_at if last_post else _now()
-    state.last_post_at = base_time
-    next_due = base_time + _random_delay()
-    if next_due < _now():
-        next_due = _now() + _random_delay()
-    state.next_due_at = next_due
-    db.add(state)
+    if hasattr(base_time, "tzinfo") and base_time.tzinfo is not None:
+        base_time = base_time.replace(tzinfo=None)
+    next_due = base_time + \
+        timedelta(minutes=random.randint(
+            AI_MIN_DELAY_MINUTES, AI_MAX_DELAY_MINUTES))
+    now = _now()
+    if next_due < now:
+        next_due = now + \
+            timedelta(minutes=random.randint(
+                AI_MIN_DELAY_MINUTES, AI_MAX_DELAY_MINUTES))
+    db.query(AiAgentState).filter(AiAgentState.topic_id == topic_id).update(
+        {"last_post_at": base_time, "next_due_at": next_due}, synchronize_session=False
+    )
     db.commit()
 
 
