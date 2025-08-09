@@ -61,7 +61,7 @@ const app = () => {
         ? postList
           .map(
             (post) =>
-              `<div class="comment" id="comment_${post.id}">${post.content}<br></div>`
+              `<div class="comment" id="comment_${post.id}">${post.content}</div>`
           )
           .join("")
         : "<div class='comment'>Нет комментариев</div>";
